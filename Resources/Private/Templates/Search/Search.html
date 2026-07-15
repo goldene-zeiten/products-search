@@ -1,0 +1,82 @@
+<div class="product-search">
+    <h2><f:translate key="search" /></h2>
+    <f:form action="search" class="d-flex gap-2 mb-4">
+        <f:form.textfield name="term" value="{result.term}" class="form-control" placeholder="{f:translate(key: 'search_placeholder')}" />
+        <f:form.submit value="{f:translate(key: 'search')}" class="btn btn-primary" />
+    </f:form>
+
+    <f:if condition="{keyfieldOptions}">
+        <f:then>
+            <f:form action="search" class="mb-4">
+                <div class="form-group">
+                    <f:form.select name="keywords" options="{keyfieldOptions}" value="{keyfieldSelected}" multiple="1" class="form-select" />
+                </div>
+                <f:form.submit value="{f:translate(key: 'search')}" class="btn btn-primary" />
+            </f:form>
+            <f:if condition="{keyfieldSelected}">
+                <f:then>
+                    <ul class="list-unstyled">
+                        <f:for each="{keyfieldResults}" as="item">
+                            <li>
+                                {item.title}
+                            </li>
+                        </f:for>
+                    </ul>
+                </f:then>
+            </f:if>
+        </f:then>
+    </f:if>
+
+    <f:if condition="{result.searched}">
+        <f:then>
+            <f:if condition="{result.results}">
+                <f:then>
+                    <div class="row">
+                        <f:for each="{result.products}" as="product">
+                            <div class="col-md-4">
+                                <f:render partial="Product/ListItem" arguments="{product: product}" />
+                            </div>
+                        </f:for>
+                    </div>
+                    <f:if condition="{result.totalPages} > 1">
+                        <f:then>
+                            <nav class="d-flex gap-2 mt-3">
+                                <f:if condition="{result.currentPage} > 1">
+                                    <f:then>
+                                        <f:link.action action="search" arguments="{term: result.term, page: result.currentPage - 1}" class="btn btn-outline-secondary btn-sm"><f:translate key="previous_page" /></f:link.action>
+                                    </f:then>
+                                </f:if>
+                                <span class="align-self-center"><f:translate key="page_of_pages" arguments="{0: result.currentPage, 1: result.totalPages}" /></span>
+                                <f:if condition="{result.currentPage} < {result.totalPages}">
+                                    <f:then>
+                                        <f:link.action action="search" arguments="{term: result.term, page: result.currentPage + 1}" class="btn btn-outline-secondary btn-sm"><f:translate key="next_page" /></f:link.action>
+                                    </f:then>
+                                </f:if>
+                            </nav>
+                        </f:then>
+                    </f:if>
+                </f:then>
+                <f:else>
+                    <p><f:translate key="search_no_results" arguments="{0: result.term}" /></p>
+                </f:else>
+            </f:if>
+        </f:then>
+    </f:if>
+
+    <f:if condition="{browseGroups}">
+        <f:then>
+            <f:for each="{browseGroups}" as="items" key="groupLabel">
+                <f:if condition="{groupLabel}">
+                    <h3>{groupLabel}</h3>
+                </f:if>
+                <ul class="list-unstyled">
+                    <f:for each="{items}" as="item">
+                        <li>
+                            {item.title}
+                        </li>
+                    </f:for>
+                </ul>
+            </f:for>
+        </f:then>
+    </f:if>
+</div>
